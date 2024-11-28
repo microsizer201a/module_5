@@ -7,6 +7,12 @@ class User:
         self.password = hash(password)
         self.age = age
 
+    def __str__(self):
+        return self.nickname
+
+    def __eq__(self, other_user):
+        return self.nickname == other_user.nickname
+
 class Video:
 
     def __init__(self, title, duration, time_now=0, adult_mode=False):
@@ -14,6 +20,9 @@ class Video:
         self.duration = duration
         self.time_now = time_now
         self.adult_mode = adult_mode
+
+    def __eq__(self, other_video):
+        return self.title == other_video.title
 
 class UrTube:
 
@@ -25,7 +34,7 @@ class UrTube:
     def log_in(self, nickname, password):
         for user in self.users:
             if user.nickname == nickname and user.password == hash(password):
-                self.current_user = user.nickname
+                self.current_user = user
 
     def register(self, nickname, password, age):
         user_exist = False
@@ -35,7 +44,7 @@ class UrTube:
         if not user_exist:
             usr = User(nickname, password, age)
             self.users.append(usr)
-            self.current_user = usr.nickname
+            self.current_user = usr
         else:
             print(f"Пользователь {nickname} уже существует")
 
@@ -46,7 +55,7 @@ class UrTube:
         for video in videos:
             title_exist = False
             for exist_video in self.videos:
-                if video.title == exist_video.title:
+                if video == exist_video:
                     title_exist = True
                     break
             if not title_exist:
@@ -67,12 +76,7 @@ class UrTube:
         else:
             for video in self.videos:
                 if title == video.title:
-                    current_user = None
-                    for user in self.users:
-                        if self.current_user == user.nickname:
-                            current_user = user
-                            break
-                    if (video.adult_mode and current_user.age >= 18) or (not video.adult_mode):
+                    if (video.adult_mode and self.current_user.age >= 18) or (not video.adult_mode):
                         for i in range(video.duration):
                             #time.sleep(1)
                             video.time_now += 1
