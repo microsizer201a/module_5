@@ -54,10 +54,12 @@ class UrTube:
 
     def get_videos(self, search_word):
         search_word = search_word.lower()
+        search_list = []
         for video in self.videos:
             search_title = video.title.lower()
             if search_word in search_title:
-                return video.title
+                search_list.append(video.title)
+        return search_list
 
     def watch_video(self, title):
         if self.current_user is None:
